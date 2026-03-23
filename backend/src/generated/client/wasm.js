@@ -221,6 +221,18 @@ exports.Prisma.ProposalScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ApiKeyScalarFieldEnum = {
+  id: 'id',
+  keyHash: 'keyHash',
+  name: 'name',
+  owner: 'owner',
+  rateLimit: 'rateLimit',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastUsedAt: 'lastUsedAt'
+};
+
 exports.Prisma.LedgerHashScalarFieldEnum = {
   sequence: 'sequence',
   hash: 'hash',
@@ -257,6 +269,7 @@ exports.Prisma.ModelName = {
   StreamArchive: 'StreamArchive',
   BridgeLog: 'BridgeLog',
   Proposal: 'Proposal',
+  ApiKey: 'ApiKey',
   LedgerHash: 'LedgerHash'
 };
 

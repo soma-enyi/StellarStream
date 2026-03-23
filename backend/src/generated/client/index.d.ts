@@ -54,6 +54,11 @@ export type BridgeLog = $Result.DefaultSelection<Prisma.$BridgeLogPayload>
  */
 export type Proposal = $Result.DefaultSelection<Prisma.$ProposalPayload>
 /**
+ * Model ApiKey
+ * 
+ */
+export type ApiKey = $Result.DefaultSelection<Prisma.$ApiKeyPayload>
+/**
  * Model LedgerHash
  * 
  */
@@ -280,6 +285,16 @@ export class PrismaClient<
     * ```
     */
   get proposal(): Prisma.ProposalDelegate<ExtArgs>;
+
+  /**
+   * `prisma.apiKey`: Exposes CRUD operations for the **ApiKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApiKeys
+    * const apiKeys = await prisma.apiKey.findMany()
+    * ```
+    */
+  get apiKey(): Prisma.ApiKeyDelegate<ExtArgs>;
 
   /**
    * `prisma.ledgerHash`: Exposes CRUD operations for the **LedgerHash** model.
@@ -739,6 +754,7 @@ export namespace Prisma {
     StreamArchive: 'StreamArchive',
     BridgeLog: 'BridgeLog',
     Proposal: 'Proposal',
+    ApiKey: 'ApiKey',
     LedgerHash: 'LedgerHash'
   };
 
@@ -755,7 +771,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "stream" | "webhook" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "ledgerHash"
+      modelProps: "stream" | "webhook" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "apiKey" | "ledgerHash"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1316,6 +1332,76 @@ export namespace Prisma {
           count: {
             args: Prisma.ProposalCountArgs<ExtArgs>
             result: $Utils.Optional<ProposalCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApiKey: {
+        payload: Prisma.$ApiKeyPayload<ExtArgs>
+        fields: Prisma.ApiKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApiKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApiKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.ApiKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApiKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          findMany: {
+            args: Prisma.ApiKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+          }
+          create: {
+            args: Prisma.ApiKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          createMany: {
+            args: Prisma.ApiKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApiKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.ApiKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          update: {
+            args: Prisma.ApiKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApiKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApiKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ApiKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.ApiKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApiKey>
+          }
+          groupBy: {
+            args: Prisma.ApiKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApiKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApiKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<ApiKeyCountAggregateOutputType> | number
           }
         }
       }
@@ -8434,6 +8520,13 @@ export namespace Prisma {
       : GetScalarType<T[P], AggregateProposal[P]>
   }
 
+  export type GetProposalAggregateType<T extends ProposalAggregateArgs> = {
+        [P in keyof T & keyof AggregateProposal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProposal[P]>
+      : GetScalarType<T[P], AggregateProposal[P]>
+  }
 
 
 
@@ -8481,6 +8574,18 @@ export namespace Prisma {
       >
     >
 
+  type GetProposalGroupByPayload<T extends ProposalGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProposalGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProposalGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProposalGroupByOutputType[P]>
+            : GetScalarType<T[P], ProposalGroupByOutputType[P]>
+        }
+      >
+    >
 
   export type ProposalSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
@@ -8779,6 +8884,2690 @@ export namespace Prisma {
           : GetScalarType<T['select'], ProposalCountAggregateOutputType>
         : number
     >
+
+    /**
+     * Allows you to perform aggregations operations on a Proposal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProposalAggregateArgs>(args: Subset<T, ProposalAggregateArgs>): Prisma.PrismaPromise<GetProposalAggregateType<T>>
+
+    /**
+     * Group by Proposal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProposalGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProposalGroupByArgs['orderBy'] }
+        : { orderBy?: ProposalGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProposalGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProposalGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Proposal model
+   */
+  readonly fields: ProposalFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Proposal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProposalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Proposal model
+   */ 
+  interface ProposalFieldRefs {
+    readonly id: FieldRef<"Proposal", 'String'>
+    readonly creator: FieldRef<"Proposal", 'String'>
+    readonly description: FieldRef<"Proposal", 'String'>
+    readonly quorum: FieldRef<"Proposal", 'Int'>
+    readonly votesFor: FieldRef<"Proposal", 'Int'>
+    readonly votesAgainst: FieldRef<"Proposal", 'Int'>
+    readonly txHash: FieldRef<"Proposal", 'String'>
+    readonly createdAt: FieldRef<"Proposal", 'DateTime'>
+    readonly updatedAt: FieldRef<"Proposal", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Proposal findUnique
+   */
+  export type ProposalFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal findUniqueOrThrow
+   */
+  export type ProposalFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal findFirst
+   */
+  export type ProposalFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Proposals.
+     */
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal findFirstOrThrow
+   */
+  export type ProposalFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Proposals.
+     */
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal findMany
+   */
+  export type ProposalFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter, which Proposals to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal create
+   */
+  export type ProposalCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * The data needed to create a Proposal.
+     */
+    data: XOR<ProposalCreateInput, ProposalUncheckedCreateInput>
+  }
+
+  /**
+   * Proposal createMany
+   */
+  export type ProposalCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Proposals.
+     */
+    data: ProposalCreateManyInput | ProposalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Proposal createManyAndReturn
+   */
+  export type ProposalCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Proposals.
+     */
+    data: ProposalCreateManyInput | ProposalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Proposal update
+   */
+  export type ProposalUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * The data needed to update a Proposal.
+     */
+    data: XOR<ProposalUpdateInput, ProposalUncheckedUpdateInput>
+    /**
+     * Choose, which Proposal to update.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal updateMany
+   */
+  export type ProposalUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Proposals.
+     */
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyInput>
+    /**
+     * Filter which Proposals to update
+     */
+    where?: ProposalWhereInput
+  }
+
+  /**
+   * Proposal upsert
+   */
+  export type ProposalUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * The filter to search for the Proposal to update in case it exists.
+     */
+    where: ProposalWhereUniqueInput
+    /**
+     * In case the Proposal found by the `where` argument doesn't exist, create a new Proposal with this data.
+     */
+    create: XOR<ProposalCreateInput, ProposalUncheckedCreateInput>
+    /**
+     * In case the Proposal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProposalUpdateInput, ProposalUncheckedUpdateInput>
+  }
+
+  /**
+   * Proposal delete
+   */
+  export type ProposalDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Filter which Proposal to delete.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal deleteMany
+   */
+  export type ProposalDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Proposals to delete
+     */
+    where?: ProposalWhereInput
+  }
+
+  /**
+   * Proposal without action
+   */
+  export type ProposalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApiKey
+   */
+
+  export type AggregateApiKey = {
+    _count: ApiKeyCountAggregateOutputType | null
+    _avg: ApiKeyAvgAggregateOutputType | null
+    _sum: ApiKeySumAggregateOutputType | null
+    _min: ApiKeyMinAggregateOutputType | null
+    _max: ApiKeyMaxAggregateOutputType | null
+  }
+
+  export type ApiKeyAvgAggregateOutputType = {
+    rateLimit: number | null
+  }
+
+  export type ApiKeySumAggregateOutputType = {
+    rateLimit: number | null
+  }
+
+  export type ApiKeyMinAggregateOutputType = {
+    id: string | null
+    keyHash: string | null
+    name: string | null
+    owner: string | null
+    rateLimit: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    lastUsedAt: Date | null
+  }
+
+  export type ApiKeyMaxAggregateOutputType = {
+    id: string | null
+    keyHash: string | null
+    name: string | null
+    owner: string | null
+    rateLimit: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    lastUsedAt: Date | null
+  }
+
+  export type ApiKeyCountAggregateOutputType = {
+    id: number
+    keyHash: number
+    name: number
+    owner: number
+    rateLimit: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    lastUsedAt: number
+    _all: number
+  }
+
+
+  export type ApiKeyAvgAggregateInputType = {
+    rateLimit?: true
+  }
+
+  export type ApiKeySumAggregateInputType = {
+    rateLimit?: true
+  }
+
+  export type ApiKeyMinAggregateInputType = {
+    id?: true
+    keyHash?: true
+    name?: true
+    owner?: true
+    rateLimit?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+  }
+
+  export type ApiKeyMaxAggregateInputType = {
+    id?: true
+    keyHash?: true
+    name?: true
+    owner?: true
+    rateLimit?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+  }
+
+  export type ApiKeyCountAggregateInputType = {
+    id?: true
+    keyHash?: true
+    name?: true
+    owner?: true
+    rateLimit?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+    _all?: true
+  }
+
+  export type ApiKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiKey to aggregate.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApiKeys
+    **/
+    _count?: true | ApiKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApiKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApiKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApiKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApiKeyMaxAggregateInputType
+  }
+
+  export type GetApiKeyAggregateType<T extends ApiKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregateApiKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApiKey[P]>
+      : GetScalarType<T[P], AggregateApiKey[P]>
+  }
+
+
+
+
+  export type ApiKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApiKeyWhereInput
+    orderBy?: ApiKeyOrderByWithAggregationInput | ApiKeyOrderByWithAggregationInput[]
+    by: ApiKeyScalarFieldEnum[] | ApiKeyScalarFieldEnum
+    having?: ApiKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApiKeyCountAggregateInputType | true
+    _avg?: ApiKeyAvgAggregateInputType
+    _sum?: ApiKeySumAggregateInputType
+    _min?: ApiKeyMinAggregateInputType
+    _max?: ApiKeyMaxAggregateInputType
+  }
+
+  export type ApiKeyGroupByOutputType = {
+    id: string
+    keyHash: string
+    name: string
+    owner: string
+    rateLimit: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    lastUsedAt: Date | null
+    _count: ApiKeyCountAggregateOutputType | null
+    _avg: ApiKeyAvgAggregateOutputType | null
+    _sum: ApiKeySumAggregateOutputType | null
+    _min: ApiKeyMinAggregateOutputType | null
+    _max: ApiKeyMaxAggregateOutputType | null
+  }
+
+  type GetApiKeyGroupByPayload<T extends ApiKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApiKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApiKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApiKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], ApiKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApiKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    keyHash?: boolean
+    name?: boolean
+    owner?: boolean
+    rateLimit?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }, ExtArgs["result"]["apiKey"]>
+
+  export type ApiKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    keyHash?: boolean
+    name?: boolean
+    owner?: boolean
+    rateLimit?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }, ExtArgs["result"]["apiKey"]>
+
+  export type ApiKeySelectScalar = {
+    id?: boolean
+    keyHash?: boolean
+    name?: boolean
+    owner?: boolean
+    rateLimit?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }
+
+
+  export type $ApiKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApiKey"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      keyHash: string
+      name: string
+      owner: string
+      rateLimit: number
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+      lastUsedAt: Date | null
+    }, ExtArgs["result"]["apiKey"]>
+    composites: {}
+  }
+
+  type ApiKeyGetPayload<S extends boolean | null | undefined | ApiKeyDefaultArgs> = $Result.GetResult<Prisma.$ApiKeyPayload, S>
+
+  type ApiKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ApiKeyFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ApiKeyCountAggregateInputType | true
+    }
+
+  export interface ApiKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApiKey'], meta: { name: 'ApiKey' } }
+    /**
+     * Find zero or one ApiKey that matches the filter.
+     * @param {ApiKeyFindUniqueArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApiKeyFindUniqueArgs>(args: SelectSubset<T, ApiKeyFindUniqueArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ApiKey that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ApiKeyFindUniqueOrThrowArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApiKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, ApiKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ApiKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindFirstArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApiKeyFindFirstArgs>(args?: SelectSubset<T, ApiKeyFindFirstArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ApiKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindFirstOrThrowArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApiKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, ApiKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ApiKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApiKeys
+     * const apiKeys = await prisma.apiKey.findMany()
+     * 
+     * // Get first 10 ApiKeys
+     * const apiKeys = await prisma.apiKey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apiKeyWithIdOnly = await prisma.apiKey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApiKeyFindManyArgs>(args?: SelectSubset<T, ApiKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ApiKey.
+     * @param {ApiKeyCreateArgs} args - Arguments to create a ApiKey.
+     * @example
+     * // Create one ApiKey
+     * const ApiKey = await prisma.apiKey.create({
+     *   data: {
+     *     // ... data to create a ApiKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApiKeyCreateArgs>(args: SelectSubset<T, ApiKeyCreateArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ApiKeys.
+     * @param {ApiKeyCreateManyArgs} args - Arguments to create many ApiKeys.
+     * @example
+     * // Create many ApiKeys
+     * const apiKey = await prisma.apiKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApiKeyCreateManyArgs>(args?: SelectSubset<T, ApiKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApiKeys and returns the data saved in the database.
+     * @param {ApiKeyCreateManyAndReturnArgs} args - Arguments to create many ApiKeys.
+     * @example
+     * // Create many ApiKeys
+     * const apiKey = await prisma.apiKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApiKeys and only return the `id`
+     * const apiKeyWithIdOnly = await prisma.apiKey.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApiKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, ApiKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ApiKey.
+     * @param {ApiKeyDeleteArgs} args - Arguments to delete one ApiKey.
+     * @example
+     * // Delete one ApiKey
+     * const ApiKey = await prisma.apiKey.delete({
+     *   where: {
+     *     // ... filter to delete one ApiKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApiKeyDeleteArgs>(args: SelectSubset<T, ApiKeyDeleteArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ApiKey.
+     * @param {ApiKeyUpdateArgs} args - Arguments to update one ApiKey.
+     * @example
+     * // Update one ApiKey
+     * const apiKey = await prisma.apiKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApiKeyUpdateArgs>(args: SelectSubset<T, ApiKeyUpdateArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ApiKeys.
+     * @param {ApiKeyDeleteManyArgs} args - Arguments to filter ApiKeys to delete.
+     * @example
+     * // Delete a few ApiKeys
+     * const { count } = await prisma.apiKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApiKeyDeleteManyArgs>(args?: SelectSubset<T, ApiKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApiKeys
+     * const apiKey = await prisma.apiKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApiKeyUpdateManyArgs>(args: SelectSubset<T, ApiKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ApiKey.
+     * @param {ApiKeyUpsertArgs} args - Arguments to update or create a ApiKey.
+     * @example
+     * // Update or create a ApiKey
+     * const apiKey = await prisma.apiKey.upsert({
+     *   create: {
+     *     // ... data to create a ApiKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApiKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApiKeyUpsertArgs>(args: SelectSubset<T, ApiKeyUpsertArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ApiKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyCountArgs} args - Arguments to filter ApiKeys to count.
+     * @example
+     * // Count the number of ApiKeys
+     * const count = await prisma.apiKey.count({
+     *   where: {
+     *     // ... the filter for the ApiKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApiKeyCountArgs>(
+      args?: Subset<T, ApiKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApiKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApiKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApiKeyAggregateArgs>(args: Subset<T, ApiKeyAggregateArgs>): Prisma.PrismaPromise<GetApiKeyAggregateType<T>>
+
+    /**
+     * Group by ApiKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApiKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApiKeyGroupByArgs['orderBy'] }
+        : { orderBy?: ApiKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApiKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApiKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApiKey model
+   */
+  readonly fields: ApiKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApiKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApiKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApiKey model
+   */ 
+  interface ApiKeyFieldRefs {
+    readonly id: FieldRef<"ApiKey", 'String'>
+    readonly keyHash: FieldRef<"ApiKey", 'String'>
+    readonly name: FieldRef<"ApiKey", 'String'>
+    readonly owner: FieldRef<"ApiKey", 'String'>
+    readonly rateLimit: FieldRef<"ApiKey", 'Int'>
+    readonly isActive: FieldRef<"ApiKey", 'Boolean'>
+    readonly createdAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly lastUsedAt: FieldRef<"ApiKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApiKey findUnique
+   */
+  export type ApiKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey findUniqueOrThrow
+   */
+  export type ApiKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey findFirst
+   */
+  export type ApiKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiKeys.
+     */
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey findFirstOrThrow
+   */
+  export type ApiKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiKeys.
+     */
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey findMany
+   */
+  export type ApiKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter, which ApiKeys to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey create
+   */
+  export type ApiKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * The data needed to create a ApiKey.
+     */
+    data: XOR<ApiKeyCreateInput, ApiKeyUncheckedCreateInput>
+  }
+
+  /**
+   * ApiKey createMany
+   */
+  export type ApiKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApiKeys.
+     */
+    data: ApiKeyCreateManyInput | ApiKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiKey createManyAndReturn
+   */
+  export type ApiKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ApiKeys.
+     */
+    data: ApiKeyCreateManyInput | ApiKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiKey update
+   */
+  export type ApiKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * The data needed to update a ApiKey.
+     */
+    data: XOR<ApiKeyUpdateInput, ApiKeyUncheckedUpdateInput>
+    /**
+     * Choose, which ApiKey to update.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey updateMany
+   */
+  export type ApiKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApiKeys.
+     */
+    data: XOR<ApiKeyUpdateManyMutationInput, ApiKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiKeys to update
+     */
+    where?: ApiKeyWhereInput
+  }
+
+  /**
+   * ApiKey upsert
+   */
+  export type ApiKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * The filter to search for the ApiKey to update in case it exists.
+     */
+    where: ApiKeyWhereUniqueInput
+    /**
+     * In case the ApiKey found by the `where` argument doesn't exist, create a new ApiKey with this data.
+     */
+    create: XOR<ApiKeyCreateInput, ApiKeyUncheckedCreateInput>
+    /**
+     * In case the ApiKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApiKeyUpdateInput, ApiKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * ApiKey delete
+   */
+  export type ApiKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Filter which ApiKey to delete.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey deleteMany
+   */
+  export type ApiKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiKeys to delete
+     */
+    where?: ApiKeyWhereInput
+  }
+
+  /**
+   * ApiKey without action
+   */
+  export type ApiKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LedgerHash
+   */
+
+  export type AggregateLedgerHash = {
+    _count: LedgerHashCountAggregateOutputType | null
+    _avg: LedgerHashAvgAggregateOutputType | null
+    _sum: LedgerHashSumAggregateOutputType | null
+    _min: LedgerHashMinAggregateOutputType | null
+    _max: LedgerHashMaxAggregateOutputType | null
+  }
+
+  export type LedgerHashAvgAggregateOutputType = {
+    sequence: number | null
+  }
+
+  export type LedgerHashSumAggregateOutputType = {
+    sequence: number | null
+  }
+
+  export type LedgerHashMinAggregateOutputType = {
+    sequence: number | null
+    hash: string | null
+    createdAt: Date | null
+  }
+
+  export type LedgerHashMaxAggregateOutputType = {
+    sequence: number | null
+    hash: string | null
+    createdAt: Date | null
+  }
+
+  export type LedgerHashCountAggregateOutputType = {
+    sequence: number
+    hash: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LedgerHashAvgAggregateInputType = {
+    sequence?: true
+  }
+
+  export type LedgerHashSumAggregateInputType = {
+    sequence?: true
+  }
+
+  export type LedgerHashMinAggregateInputType = {
+    sequence?: true
+    hash?: true
+    createdAt?: true
+  }
+
+  export type LedgerHashMaxAggregateInputType = {
+    sequence?: true
+    hash?: true
+    createdAt?: true
+  }
+
+  export type LedgerHashCountAggregateInputType = {
+    sequence?: true
+    hash?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LedgerHashAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerHash to aggregate.
+     */
+    where?: LedgerHashWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerHashes to fetch.
+     */
+    orderBy?: LedgerHashOrderByWithRelationInput | LedgerHashOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LedgerHashWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerHashes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerHashes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LedgerHashes
+    **/
+    _count?: true | LedgerHashCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LedgerHashAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LedgerHashSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LedgerHashMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LedgerHashMaxAggregateInputType
+  }
+
+  export type GetLedgerHashAggregateType<T extends LedgerHashAggregateArgs> = {
+        [P in keyof T & keyof AggregateLedgerHash]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLedgerHash[P]>
+      : GetScalarType<T[P], AggregateLedgerHash[P]>
+  }
+
+
+
+
+  export type LedgerHashGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerHashWhereInput
+    orderBy?: LedgerHashOrderByWithAggregationInput | LedgerHashOrderByWithAggregationInput[]
+    by: LedgerHashScalarFieldEnum[] | LedgerHashScalarFieldEnum
+    having?: LedgerHashScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LedgerHashCountAggregateInputType | true
+    _avg?: LedgerHashAvgAggregateInputType
+    _sum?: LedgerHashSumAggregateInputType
+    _min?: LedgerHashMinAggregateInputType
+    _max?: LedgerHashMaxAggregateInputType
+  }
+
+  export type LedgerHashGroupByOutputType = {
+    sequence: number
+    hash: string
+    createdAt: Date
+    _count: LedgerHashCountAggregateOutputType | null
+    _avg: LedgerHashAvgAggregateOutputType | null
+    _sum: LedgerHashSumAggregateOutputType | null
+    _min: LedgerHashMinAggregateOutputType | null
+    _max: LedgerHashMaxAggregateOutputType | null
+  }
+
+  type GetLedgerHashGroupByPayload<T extends LedgerHashGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LedgerHashGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LedgerHashGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LedgerHashGroupByOutputType[P]>
+            : GetScalarType<T[P], LedgerHashGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LedgerHashSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    sequence?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["ledgerHash"]>
+
+  export type LedgerHashSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    sequence?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["ledgerHash"]>
+
+  export type LedgerHashSelectScalar = {
+    sequence?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }
+
+
+  export type $LedgerHashPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LedgerHash"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      sequence: number
+      hash: string
+      createdAt: Date
+    }, ExtArgs["result"]["ledgerHash"]>
+    composites: {}
+  }
+
+  type LedgerHashGetPayload<S extends boolean | null | undefined | LedgerHashDefaultArgs> = $Result.GetResult<Prisma.$LedgerHashPayload, S>
+
+  type LedgerHashCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<LedgerHashFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: LedgerHashCountAggregateInputType | true
+    }
+
+  export interface LedgerHashDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LedgerHash'], meta: { name: 'LedgerHash' } }
+    /**
+     * Find zero or one LedgerHash that matches the filter.
+     * @param {LedgerHashFindUniqueArgs} args - Arguments to find a LedgerHash
+     * @example
+     * // Get one LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LedgerHashFindUniqueArgs>(args: SelectSubset<T, LedgerHashFindUniqueArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one LedgerHash that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {LedgerHashFindUniqueOrThrowArgs} args - Arguments to find a LedgerHash
+     * @example
+     * // Get one LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LedgerHashFindUniqueOrThrowArgs>(args: SelectSubset<T, LedgerHashFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first LedgerHash that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashFindFirstArgs} args - Arguments to find a LedgerHash
+     * @example
+     * // Get one LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LedgerHashFindFirstArgs>(args?: SelectSubset<T, LedgerHashFindFirstArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first LedgerHash that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashFindFirstOrThrowArgs} args - Arguments to find a LedgerHash
+     * @example
+     * // Get one LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LedgerHashFindFirstOrThrowArgs>(args?: SelectSubset<T, LedgerHashFindFirstOrThrowArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more LedgerHashes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LedgerHashes
+     * const ledgerHashes = await prisma.ledgerHash.findMany()
+     * 
+     * // Get first 10 LedgerHashes
+     * const ledgerHashes = await prisma.ledgerHash.findMany({ take: 10 })
+     * 
+     * // Only select the `sequence`
+     * const ledgerHashWithSequenceOnly = await prisma.ledgerHash.findMany({ select: { sequence: true } })
+     * 
+     */
+    findMany<T extends LedgerHashFindManyArgs>(args?: SelectSubset<T, LedgerHashFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a LedgerHash.
+     * @param {LedgerHashCreateArgs} args - Arguments to create a LedgerHash.
+     * @example
+     * // Create one LedgerHash
+     * const LedgerHash = await prisma.ledgerHash.create({
+     *   data: {
+     *     // ... data to create a LedgerHash
+     *   }
+     * })
+     * 
+     */
+    create<T extends LedgerHashCreateArgs>(args: SelectSubset<T, LedgerHashCreateArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many LedgerHashes.
+     * @param {LedgerHashCreateManyArgs} args - Arguments to create many LedgerHashes.
+     * @example
+     * // Create many LedgerHashes
+     * const ledgerHash = await prisma.ledgerHash.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LedgerHashCreateManyArgs>(args?: SelectSubset<T, LedgerHashCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LedgerHashes and returns the data saved in the database.
+     * @param {LedgerHashCreateManyAndReturnArgs} args - Arguments to create many LedgerHashes.
+     * @example
+     * // Create many LedgerHashes
+     * const ledgerHash = await prisma.ledgerHash.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LedgerHashes and only return the `sequence`
+     * const ledgerHashWithSequenceOnly = await prisma.ledgerHash.createManyAndReturn({ 
+     *   select: { sequence: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LedgerHashCreateManyAndReturnArgs>(args?: SelectSubset<T, LedgerHashCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a LedgerHash.
+     * @param {LedgerHashDeleteArgs} args - Arguments to delete one LedgerHash.
+     * @example
+     * // Delete one LedgerHash
+     * const LedgerHash = await prisma.ledgerHash.delete({
+     *   where: {
+     *     // ... filter to delete one LedgerHash
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LedgerHashDeleteArgs>(args: SelectSubset<T, LedgerHashDeleteArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one LedgerHash.
+     * @param {LedgerHashUpdateArgs} args - Arguments to update one LedgerHash.
+     * @example
+     * // Update one LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LedgerHashUpdateArgs>(args: SelectSubset<T, LedgerHashUpdateArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more LedgerHashes.
+     * @param {LedgerHashDeleteManyArgs} args - Arguments to filter LedgerHashes to delete.
+     * @example
+     * // Delete a few LedgerHashes
+     * const { count } = await prisma.ledgerHash.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LedgerHashDeleteManyArgs>(args?: SelectSubset<T, LedgerHashDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LedgerHashes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LedgerHashes
+     * const ledgerHash = await prisma.ledgerHash.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LedgerHashUpdateManyArgs>(args: SelectSubset<T, LedgerHashUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one LedgerHash.
+     * @param {LedgerHashUpsertArgs} args - Arguments to update or create a LedgerHash.
+     * @example
+     * // Update or create a LedgerHash
+     * const ledgerHash = await prisma.ledgerHash.upsert({
+     *   create: {
+     *     // ... data to create a LedgerHash
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LedgerHash we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LedgerHashUpsertArgs>(args: SelectSubset<T, LedgerHashUpsertArgs<ExtArgs>>): Prisma__LedgerHashClient<$Result.GetResult<Prisma.$LedgerHashPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of LedgerHashes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashCountArgs} args - Arguments to filter LedgerHashes to count.
+     * @example
+     * // Count the number of LedgerHashes
+     * const count = await prisma.ledgerHash.count({
+     *   where: {
+     *     // ... the filter for the LedgerHashes we want to count
+     *   }
+     * })
+    **/
+    count<T extends LedgerHashCountArgs>(
+      args?: Subset<T, LedgerHashCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LedgerHashCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LedgerHash.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LedgerHashAggregateArgs>(args: Subset<T, LedgerHashAggregateArgs>): Prisma.PrismaPromise<GetLedgerHashAggregateType<T>>
+
+    /**
+     * Group by LedgerHash.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerHashGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LedgerHashGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LedgerHashGroupByArgs['orderBy'] }
+        : { orderBy?: LedgerHashGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LedgerHashGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLedgerHashGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LedgerHash model
+   */
+  readonly fields: LedgerHashFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LedgerHash.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LedgerHashClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LedgerHash model
+   */ 
+  interface LedgerHashFieldRefs {
+    readonly sequence: FieldRef<"LedgerHash", 'Int'>
+    readonly hash: FieldRef<"LedgerHash", 'String'>
+    readonly createdAt: FieldRef<"LedgerHash", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LedgerHash findUnique
+   */
+  export type LedgerHashFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter, which LedgerHash to fetch.
+     */
+    where: LedgerHashWhereUniqueInput
+  }
+
+  /**
+   * LedgerHash findUniqueOrThrow
+   */
+  export type LedgerHashFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter, which LedgerHash to fetch.
+     */
+    where: LedgerHashWhereUniqueInput
+  }
+
+  /**
+   * LedgerHash findFirst
+   */
+  export type LedgerHashFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter, which LedgerHash to fetch.
+     */
+    where?: LedgerHashWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerHashes to fetch.
+     */
+    orderBy?: LedgerHashOrderByWithRelationInput | LedgerHashOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerHashes.
+     */
+    cursor?: LedgerHashWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerHashes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerHashes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerHashes.
+     */
+    distinct?: LedgerHashScalarFieldEnum | LedgerHashScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerHash findFirstOrThrow
+   */
+  export type LedgerHashFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter, which LedgerHash to fetch.
+     */
+    where?: LedgerHashWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerHashes to fetch.
+     */
+    orderBy?: LedgerHashOrderByWithRelationInput | LedgerHashOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerHashes.
+     */
+    cursor?: LedgerHashWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerHashes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerHashes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerHashes.
+     */
+    distinct?: LedgerHashScalarFieldEnum | LedgerHashScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerHash findMany
+   */
+  export type LedgerHashFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter, which LedgerHashes to fetch.
+     */
+    where?: LedgerHashWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerHashes to fetch.
+     */
+    orderBy?: LedgerHashOrderByWithRelationInput | LedgerHashOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LedgerHashes.
+     */
+    cursor?: LedgerHashWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerHashes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerHashes.
+     */
+    skip?: number
+    distinct?: LedgerHashScalarFieldEnum | LedgerHashScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerHash create
+   */
+  export type LedgerHashCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * The data needed to create a LedgerHash.
+     */
+    data: XOR<LedgerHashCreateInput, LedgerHashUncheckedCreateInput>
+  }
+
+  /**
+   * LedgerHash createMany
+   */
+  export type LedgerHashCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LedgerHashes.
+     */
+    data: LedgerHashCreateManyInput | LedgerHashCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LedgerHash createManyAndReturn
+   */
+  export type LedgerHashCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many LedgerHashes.
+     */
+    data: LedgerHashCreateManyInput | LedgerHashCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LedgerHash update
+   */
+  export type LedgerHashUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * The data needed to update a LedgerHash.
+     */
+    data: XOR<LedgerHashUpdateInput, LedgerHashUncheckedUpdateInput>
+    /**
+     * Choose, which LedgerHash to update.
+     */
+    where: LedgerHashWhereUniqueInput
+  }
+
+  /**
+   * LedgerHash updateMany
+   */
+  export type LedgerHashUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LedgerHashes.
+     */
+    data: XOR<LedgerHashUpdateManyMutationInput, LedgerHashUncheckedUpdateManyInput>
+    /**
+     * Filter which LedgerHashes to update
+     */
+    where?: LedgerHashWhereInput
+  }
+
+  /**
+   * LedgerHash upsert
+   */
+  export type LedgerHashUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * The filter to search for the LedgerHash to update in case it exists.
+     */
+    where: LedgerHashWhereUniqueInput
+    /**
+     * In case the LedgerHash found by the `where` argument doesn't exist, create a new LedgerHash with this data.
+     */
+    create: XOR<LedgerHashCreateInput, LedgerHashUncheckedCreateInput>
+    /**
+     * In case the LedgerHash was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LedgerHashUpdateInput, LedgerHashUncheckedUpdateInput>
+  }
+
+  /**
+   * LedgerHash delete
+   */
+  export type LedgerHashDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+    /**
+     * Filter which LedgerHash to delete.
+     */
+    where: LedgerHashWhereUniqueInput
+  }
+
+  /**
+   * LedgerHash deleteMany
+   */
+  export type LedgerHashDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerHashes to delete
+     */
+    where?: LedgerHashWhereInput
+  }
+
+  /**
+   * LedgerHash without action
+   */
+  export type LedgerHashDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerHash
+     */
+    select?: LedgerHashSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Enums
+   */
+
+  export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
+    Serializable: 'Serializable'
+  };
+
+  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+  export const StreamScalarFieldEnum: {
+    id: 'id',
+    streamId: 'streamId',
+    txHash: 'txHash',
+    sender: 'sender',
+    receiver: 'receiver',
+    tokenAddress: 'tokenAddress',
+    amount: 'amount',
+    duration: 'duration',
+    status: 'status',
+    withdrawn: 'withdrawn'
+  };
+
+  export type StreamScalarFieldEnum = (typeof StreamScalarFieldEnum)[keyof typeof StreamScalarFieldEnum]
+
+
+  export const WebhookScalarFieldEnum: {
+    id: 'id',
+    url: 'url',
+    description: 'description',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
+
+
+  export const SyncStateScalarFieldEnum: {
+    id: 'id',
+    lastLedgerSequence: 'lastLedgerSequence'
+  };
+
+  export type SyncStateScalarFieldEnum = (typeof SyncStateScalarFieldEnum)[keyof typeof SyncStateScalarFieldEnum]
+
+
+  export const EventLogScalarFieldEnum: {
+    id: 'id',
+    eventType: 'eventType',
+    streamId: 'streamId',
+    txHash: 'txHash',
+    ledger: 'ledger',
+    ledgerClosedAt: 'ledgerClosedAt',
+    sender: 'sender',
+    receiver: 'receiver',
+    amount: 'amount',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+  };
+
+  export type EventLogScalarFieldEnum = (typeof EventLogScalarFieldEnum)[keyof typeof EventLogScalarFieldEnum]
+
+
+  export const StreamSnapshotScalarFieldEnum: {
+    id: 'id',
+    streamId: 'streamId',
+    sender: 'sender',
+    receiver: 'receiver',
+    tokenAddress: 'tokenAddress',
+    amountPerSecond: 'amountPerSecond',
+    totalAmount: 'totalAmount',
+    status: 'status',
+    snapshotMonth: 'snapshotMonth',
+    createdAt: 'createdAt'
+  };
+
+  export type StreamSnapshotScalarFieldEnum = (typeof StreamSnapshotScalarFieldEnum)[keyof typeof StreamSnapshotScalarFieldEnum]
+
+
+  export const StreamArchiveScalarFieldEnum: {
+    id: 'id',
+    eventType: 'eventType',
+    streamId: 'streamId',
+    txHash: 'txHash',
+    ledger: 'ledger',
+    ledgerClosedAt: 'ledgerClosedAt',
+    sender: 'sender',
+    receiver: 'receiver',
+    amount: 'amount',
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    archivedAt: 'archivedAt'
+  };
+
+  export type StreamArchiveScalarFieldEnum = (typeof StreamArchiveScalarFieldEnum)[keyof typeof StreamArchiveScalarFieldEnum]
+
+
+  export const BridgeLogScalarFieldEnum: {
+    id: 'id',
+    bridge: 'bridge',
+    eventType: 'eventType',
+    sourceChain: 'sourceChain',
+    targetChain: 'targetChain',
+    sourceAsset: 'sourceAsset',
+    targetAsset: 'targetAsset',
+    amount: 'amount',
+    sender: 'sender',
+    recipient: 'recipient',
+    txHash: 'txHash',
+    status: 'status',
+    payload: 'payload',
+    landedAt: 'landedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type BridgeLogScalarFieldEnum = (typeof BridgeLogScalarFieldEnum)[keyof typeof BridgeLogScalarFieldEnum]
+
+
+  export const ProposalScalarFieldEnum: {
+    id: 'id',
+    creator: 'creator',
+    description: 'description',
+    quorum: 'quorum',
+    votesFor: 'votesFor',
+    votesAgainst: 'votesAgainst',
+    txHash: 'txHash',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProposalScalarFieldEnum = (typeof ProposalScalarFieldEnum)[keyof typeof ProposalScalarFieldEnum]
+
+
+  export const ApiKeyScalarFieldEnum: {
+    id: 'id',
+    keyHash: 'keyHash',
+    name: 'name',
+    owner: 'owner',
+    rateLimit: 'rateLimit',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    lastUsedAt: 'lastUsedAt'
+  };
+
+  export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+  export const LedgerHashScalarFieldEnum: {
+    sequence: 'sequence',
+    hash: 'hash',
+    createdAt: 'createdAt'
+  };
+
+  export type LedgerHashScalarFieldEnum = (typeof LedgerHashScalarFieldEnum)[keyof typeof LedgerHashScalarFieldEnum]
+
+
+  export const SortOrder: {
+    asc: 'asc',
+    desc: 'desc'
+  };
+
+  export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  /**
+   * Field references 
+   */
+
+  type ProposalCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ProposalFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ProposalCountAggregateInputType | true
+    }
+
+  export interface ProposalDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Proposal'], meta: { name: 'Proposal' } }
+    /**
+     * Find zero or one Proposal that matches the filter.
+     * @param {ProposalFindUniqueArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProposalFindUniqueArgs>(args: SelectSubset<T, ProposalFindUniqueArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Proposal that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ProposalFindUniqueOrThrowArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProposalFindUniqueOrThrowArgs>(args: SelectSubset<T, ProposalFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Proposal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalFindFirstArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProposalFindFirstArgs>(args?: SelectSubset<T, ProposalFindFirstArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Proposal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalFindFirstOrThrowArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProposalFindFirstOrThrowArgs>(args?: SelectSubset<T, ProposalFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StreamStatus'
+   */
+  export type EnumStreamStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StreamStatus'>
+    
+
+    /**
+     * Create a Proposal.
+     * @param {ProposalCreateArgs} args - Arguments to create a Proposal.
+     * @example
+     * // Create one Proposal
+     * const Proposal = await prisma.proposal.create({
+     *   data: {
+     *     // ... data to create a Proposal
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProposalCreateArgs>(args: SelectSubset<T, ProposalCreateArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Proposals.
+     * @param {ProposalCreateManyArgs} args - Arguments to create many Proposals.
+     * @example
+     * // Create many Proposals
+     * const proposal = await prisma.proposal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProposalCreateManyArgs>(args?: SelectSubset<T, ProposalCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Proposals and returns the data saved in the database.
+     * @param {ProposalCreateManyAndReturnArgs} args - Arguments to create many Proposals.
+     * @example
+     * // Create many Proposals
+     * const proposal = await prisma.proposal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Proposals and only return the `id`
+     * const proposalWithIdOnly = await prisma.proposal.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProposalCreateManyAndReturnArgs>(args?: SelectSubset<T, ProposalCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "createManyAndReturn">>
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+    /**
+     * Update one Proposal.
+     * @param {ProposalUpdateArgs} args - Arguments to update one Proposal.
+     * @example
+     * // Update one Proposal
+     * const proposal = await prisma.proposal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProposalUpdateArgs>(args: SelectSubset<T, ProposalUpdateArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+    /**
+     * Update zero or more Proposals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Proposals
+     * const proposal = await prisma.proposal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProposalUpdateManyArgs>(args: SelectSubset<T, ProposalUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt'
+   */
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt[]'
+   */
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
 
     /**
      * Allows you to perform aggregations operations on a Proposal.
@@ -11314,29 +14103,574 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StreamSnapshotCreateInput = {
-    id?: string
-    streamId: string
-    sender: string
-    receiver: string
-    tokenAddress: string
-    amountPerSecond: bigint | number
-    totalAmount: bigint | number
-    status: $Enums.StreamStatus
-    snapshotMonth: string
-    createdAt?: Date | string
+  export type BridgeLogWhereInput = {
+    AND?: BridgeLogWhereInput | BridgeLogWhereInput[]
+    OR?: BridgeLogWhereInput[]
+    NOT?: BridgeLogWhereInput | BridgeLogWhereInput[]
+    id?: StringFilter<"BridgeLog"> | string
+    bridge?: StringFilter<"BridgeLog"> | string
+    eventType?: StringFilter<"BridgeLog"> | string
+    sourceChain?: StringFilter<"BridgeLog"> | string
+    targetChain?: StringFilter<"BridgeLog"> | string
+    sourceAsset?: StringFilter<"BridgeLog"> | string
+    targetAsset?: StringNullableFilter<"BridgeLog"> | string | null
+    amount?: StringFilter<"BridgeLog"> | string
+    sender?: StringNullableFilter<"BridgeLog"> | string | null
+    recipient?: StringFilter<"BridgeLog"> | string
+    txHash?: StringFilter<"BridgeLog"> | string
+    status?: StringFilter<"BridgeLog"> | string
+    payload?: StringNullableFilter<"BridgeLog"> | string | null
+    landedAt?: DateTimeNullableFilter<"BridgeLog"> | Date | string | null
+    createdAt?: DateTimeFilter<"BridgeLog"> | Date | string
   }
 
-  export type StreamSnapshotUncheckedCreateInput = {
+  export type BridgeLogOrderByWithRelationInput = {
+    id?: SortOrder
+    bridge?: SortOrder
+    eventType?: SortOrder
+    sourceChain?: SortOrder
+    targetChain?: SortOrder
+    sourceAsset?: SortOrder
+    targetAsset?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    sender?: SortOrderInput | SortOrder
+    recipient?: SortOrder
+    txHash?: SortOrder
+    status?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    landedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BridgeLogWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    streamId: string
+    txHash?: string
+    AND?: BridgeLogWhereInput | BridgeLogWhereInput[]
+    OR?: BridgeLogWhereInput[]
+    NOT?: BridgeLogWhereInput | BridgeLogWhereInput[]
+    bridge?: StringFilter<"BridgeLog"> | string
+    eventType?: StringFilter<"BridgeLog"> | string
+    sourceChain?: StringFilter<"BridgeLog"> | string
+    targetChain?: StringFilter<"BridgeLog"> | string
+    sourceAsset?: StringFilter<"BridgeLog"> | string
+    targetAsset?: StringNullableFilter<"BridgeLog"> | string | null
+    amount?: StringFilter<"BridgeLog"> | string
+    sender?: StringNullableFilter<"BridgeLog"> | string | null
+    recipient?: StringFilter<"BridgeLog"> | string
+    status?: StringFilter<"BridgeLog"> | string
+    payload?: StringNullableFilter<"BridgeLog"> | string | null
+    landedAt?: DateTimeNullableFilter<"BridgeLog"> | Date | string | null
+    createdAt?: DateTimeFilter<"BridgeLog"> | Date | string
+  }, "id" | "txHash">
+
+  export type BridgeLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    bridge?: SortOrder
+    eventType?: SortOrder
+    sourceChain?: SortOrder
+    targetChain?: SortOrder
+    sourceAsset?: SortOrder
+    targetAsset?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    sender?: SortOrderInput | SortOrder
+    recipient?: SortOrder
+    txHash?: SortOrder
+    status?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    landedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: BridgeLogCountOrderByAggregateInput
+    _max?: BridgeLogMaxOrderByAggregateInput
+    _min?: BridgeLogMinOrderByAggregateInput
+  }
+
+  export type BridgeLogScalarWhereWithAggregatesInput = {
+    AND?: BridgeLogScalarWhereWithAggregatesInput | BridgeLogScalarWhereWithAggregatesInput[]
+    OR?: BridgeLogScalarWhereWithAggregatesInput[]
+    NOT?: BridgeLogScalarWhereWithAggregatesInput | BridgeLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BridgeLog"> | string
+    bridge?: StringWithAggregatesFilter<"BridgeLog"> | string
+    eventType?: StringWithAggregatesFilter<"BridgeLog"> | string
+    sourceChain?: StringWithAggregatesFilter<"BridgeLog"> | string
+    targetChain?: StringWithAggregatesFilter<"BridgeLog"> | string
+    sourceAsset?: StringWithAggregatesFilter<"BridgeLog"> | string
+    targetAsset?: StringNullableWithAggregatesFilter<"BridgeLog"> | string | null
+    amount?: StringWithAggregatesFilter<"BridgeLog"> | string
+    sender?: StringNullableWithAggregatesFilter<"BridgeLog"> | string | null
+    recipient?: StringWithAggregatesFilter<"BridgeLog"> | string
+    txHash?: StringWithAggregatesFilter<"BridgeLog"> | string
+    status?: StringWithAggregatesFilter<"BridgeLog"> | string
+    payload?: StringNullableWithAggregatesFilter<"BridgeLog"> | string | null
+    landedAt?: DateTimeNullableWithAggregatesFilter<"BridgeLog"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BridgeLog"> | Date | string
+  }
+
+  export type ProposalWhereInput = {
+    AND?: ProposalWhereInput | ProposalWhereInput[]
+    OR?: ProposalWhereInput[]
+    NOT?: ProposalWhereInput | ProposalWhereInput[]
+    id?: StringFilter<"Proposal"> | string
+    creator?: StringFilter<"Proposal"> | string
+    description?: StringFilter<"Proposal"> | string
+    quorum?: IntFilter<"Proposal"> | number
+    votesFor?: IntFilter<"Proposal"> | number
+    votesAgainst?: IntFilter<"Proposal"> | number
+    txHash?: StringFilter<"Proposal"> | string
+    createdAt?: DateTimeFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeFilter<"Proposal"> | Date | string
+  }
+
+  export type ProposalOrderByWithRelationInput = {
+    id?: SortOrder
+    creator?: SortOrder
+    description?: SortOrder
+    quorum?: SortOrder
+    votesFor?: SortOrder
+    votesAgainst?: SortOrder
+    txHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProposalWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    txHash?: string
+    AND?: ProposalWhereInput | ProposalWhereInput[]
+    OR?: ProposalWhereInput[]
+    NOT?: ProposalWhereInput | ProposalWhereInput[]
+    creator?: StringFilter<"Proposal"> | string
+    description?: StringFilter<"Proposal"> | string
+    quorum?: IntFilter<"Proposal"> | number
+    votesFor?: IntFilter<"Proposal"> | number
+    votesAgainst?: IntFilter<"Proposal"> | number
+    createdAt?: DateTimeFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeFilter<"Proposal"> | Date | string
+  }, "id" | "txHash">
+
+  export type ProposalOrderByWithAggregationInput = {
+    id?: SortOrder
+    creator?: SortOrder
+    description?: SortOrder
+    quorum?: SortOrder
+    votesFor?: SortOrder
+    votesAgainst?: SortOrder
+    txHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProposalCountOrderByAggregateInput
+    _avg?: ProposalAvgOrderByAggregateInput
+    _max?: ProposalMaxOrderByAggregateInput
+    _min?: ProposalMinOrderByAggregateInput
+    _sum?: ProposalSumOrderByAggregateInput
+  }
+
+  export type ProposalScalarWhereWithAggregatesInput = {
+    AND?: ProposalScalarWhereWithAggregatesInput | ProposalScalarWhereWithAggregatesInput[]
+    OR?: ProposalScalarWhereWithAggregatesInput[]
+    NOT?: ProposalScalarWhereWithAggregatesInput | ProposalScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Proposal"> | string
+    creator?: StringWithAggregatesFilter<"Proposal"> | string
+    description?: StringWithAggregatesFilter<"Proposal"> | string
+    quorum?: IntWithAggregatesFilter<"Proposal"> | number
+    votesFor?: IntWithAggregatesFilter<"Proposal"> | number
+    votesAgainst?: IntWithAggregatesFilter<"Proposal"> | number
+    txHash?: StringWithAggregatesFilter<"Proposal"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
+  }
+
+  export type ApiKeyWhereInput = {
+    AND?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    OR?: ApiKeyWhereInput[]
+    NOT?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    id?: StringFilter<"ApiKey"> | string
+    keyHash?: StringFilter<"ApiKey"> | string
+    name?: StringFilter<"ApiKey"> | string
+    owner?: StringFilter<"ApiKey"> | string
+    rateLimit?: IntFilter<"ApiKey"> | number
+    isActive?: BoolFilter<"ApiKey"> | boolean
+    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ApiKey"> | Date | string
+    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+  }
+
+  export type ApiKeyOrderByWithRelationInput = {
+    id?: SortOrder
+    keyHash?: SortOrder
+    name?: SortOrder
+    owner?: SortOrder
+    rateLimit?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+  }
+
+  export type ApiKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    keyHash?: string
+    AND?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    OR?: ApiKeyWhereInput[]
+    NOT?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    name?: StringFilter<"ApiKey"> | string
+    owner?: StringFilter<"ApiKey"> | string
+    rateLimit?: IntFilter<"ApiKey"> | number
+    isActive?: BoolFilter<"ApiKey"> | boolean
+    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ApiKey"> | Date | string
+    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+  }, "id" | "keyHash">
+
+  export type ApiKeyOrderByWithAggregationInput = {
+    id?: SortOrder
+    keyHash?: SortOrder
+    name?: SortOrder
+    owner?: SortOrder
+    rateLimit?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    _count?: ApiKeyCountOrderByAggregateInput
+    _avg?: ApiKeyAvgOrderByAggregateInput
+    _max?: ApiKeyMaxOrderByAggregateInput
+    _min?: ApiKeyMinOrderByAggregateInput
+    _sum?: ApiKeySumOrderByAggregateInput
+  }
+
+  export type ApiKeyScalarWhereWithAggregatesInput = {
+    AND?: ApiKeyScalarWhereWithAggregatesInput | ApiKeyScalarWhereWithAggregatesInput[]
+    OR?: ApiKeyScalarWhereWithAggregatesInput[]
+    NOT?: ApiKeyScalarWhereWithAggregatesInput | ApiKeyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApiKey"> | string
+    keyHash?: StringWithAggregatesFilter<"ApiKey"> | string
+    name?: StringWithAggregatesFilter<"ApiKey"> | string
+    owner?: StringWithAggregatesFilter<"ApiKey"> | string
+    rateLimit?: IntWithAggregatesFilter<"ApiKey"> | number
+    isActive?: BoolWithAggregatesFilter<"ApiKey"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ApiKey"> | Date | string
+    lastUsedAt?: DateTimeNullableWithAggregatesFilter<"ApiKey"> | Date | string | null
+  }
+
+  export type LedgerHashWhereInput = {
+    AND?: LedgerHashWhereInput | LedgerHashWhereInput[]
+    OR?: LedgerHashWhereInput[]
+    NOT?: LedgerHashWhereInput | LedgerHashWhereInput[]
+    sequence?: IntFilter<"LedgerHash"> | number
+    hash?: StringFilter<"LedgerHash"> | string
+    createdAt?: DateTimeFilter<"LedgerHash"> | Date | string
+  }
+
+  export type LedgerHashOrderByWithRelationInput = {
+    sequence?: SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LedgerHashWhereUniqueInput = Prisma.AtLeast<{
+    sequence?: number
+    AND?: LedgerHashWhereInput | LedgerHashWhereInput[]
+    OR?: LedgerHashWhereInput[]
+    NOT?: LedgerHashWhereInput | LedgerHashWhereInput[]
+    hash?: StringFilter<"LedgerHash"> | string
+    createdAt?: DateTimeFilter<"LedgerHash"> | Date | string
+  }, "sequence">
+
+  export type LedgerHashOrderByWithAggregationInput = {
+    sequence?: SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+    _count?: LedgerHashCountOrderByAggregateInput
+    _avg?: LedgerHashAvgOrderByAggregateInput
+    _max?: LedgerHashMaxOrderByAggregateInput
+    _min?: LedgerHashMinOrderByAggregateInput
+    _sum?: LedgerHashSumOrderByAggregateInput
+  }
+
+  export type LedgerHashScalarWhereWithAggregatesInput = {
+    AND?: LedgerHashScalarWhereWithAggregatesInput | LedgerHashScalarWhereWithAggregatesInput[]
+    OR?: LedgerHashScalarWhereWithAggregatesInput[]
+    NOT?: LedgerHashScalarWhereWithAggregatesInput | LedgerHashScalarWhereWithAggregatesInput[]
+    sequence?: IntWithAggregatesFilter<"LedgerHash"> | number
+    hash?: StringWithAggregatesFilter<"LedgerHash"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"LedgerHash"> | Date | string
+  }
+
+  export type StreamCreateInput = {
+    id?: string
+    streamId?: string | null
+    txHash: string
     sender: string
     receiver: string
-    tokenAddress: string
-    amountPerSecond: bigint | number
-    totalAmount: bigint | number
-    status: $Enums.StreamStatus
-    snapshotMonth: string
+    tokenAddress?: string | null
+    amount: string
+    duration?: number | null
+    status?: $Enums.StreamStatus
+    withdrawn?: string | null
+  }
+
+  export type StreamUncheckedCreateInput = {
+    id?: string
+    streamId?: string | null
+    txHash: string
+    sender: string
+    receiver: string
+    tokenAddress?: string | null
+    amount: string
+    duration?: number | null
+    status?: $Enums.StreamStatus
+    withdrawn?: string | null
+  }
+
+  export type StreamSnapshotUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: NullableStringFieldUpdateOperationsInput | string | null
+    txHash?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    tokenAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: StringFieldUpdateOperationsInput | string
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStreamStatusFieldUpdateOperationsInput | $Enums.StreamStatus
+    withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type StreamSnapshotUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: NullableStringFieldUpdateOperationsInput | string | null
+    txHash?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    tokenAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: StringFieldUpdateOperationsInput | string
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStreamStatusFieldUpdateOperationsInput | $Enums.StreamStatus
+    withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type StreamCreateManyInput = {
+    id?: string
+    streamId?: string | null
+    txHash: string
+    sender: string
+    receiver: string
+    tokenAddress?: string | null
+    amount: string
+    duration?: number | null
+    status?: $Enums.StreamStatus
+    withdrawn?: string | null
+  }
+
+  export type StreamSnapshotUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: NullableStringFieldUpdateOperationsInput | string | null
+    txHash?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    tokenAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: StringFieldUpdateOperationsInput | string
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStreamStatusFieldUpdateOperationsInput | $Enums.StreamStatus
+    withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type StreamSnapshotUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: NullableStringFieldUpdateOperationsInput | string | null
+    txHash?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    tokenAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: StringFieldUpdateOperationsInput | string
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStreamStatusFieldUpdateOperationsInput | $Enums.StreamStatus
+    withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type WebhookCreateInput = {
+    id?: string
+    url: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookUncheckedCreateInput = {
+    id?: string
+    url: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookCreateManyInput = {
+    id?: string
+    url: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StreamArchiveCreateInput = {
+    id?: string
+    eventType: string
+    streamId: string
+    txHash: string
+    ledger: number
+    ledgerClosedAt: string
+    sender?: string | null
+    receiver?: string | null
+    amount?: bigint | number | null
+    metadata?: string | null
+    createdAt: Date | string
+    archivedAt?: Date | string
+  }
+
+  export type StreamArchiveUncheckedCreateInput = {
+    id?: string
+    eventType: string
+    streamId: string
+    txHash: string
+    ledger: number
+    ledgerClosedAt: string
+    sender?: string | null
+    receiver?: string | null
+    amount?: bigint | number | null
+    metadata?: string | null
+    createdAt: Date | string
+    archivedAt?: Date | string
+  }
+
+  export type StreamArchiveUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    ledger?: IntFieldUpdateOperationsInput | number
+    ledgerClosedAt?: StringFieldUpdateOperationsInput | string
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    receiver?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StreamArchiveUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    ledger?: IntFieldUpdateOperationsInput | number
+    ledgerClosedAt?: StringFieldUpdateOperationsInput | string
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    receiver?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StreamArchiveCreateManyInput = {
+    id?: string
+    eventType: string
+    streamId: string
+    txHash: string
+    ledger: number
+    ledgerClosedAt: string
+    sender?: string | null
+    receiver?: string | null
+    amount?: bigint | number | null
+    metadata?: string | null
+    createdAt: Date | string
+    archivedAt?: Date | string
+  }
+
+  export type StreamArchiveUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    ledger?: IntFieldUpdateOperationsInput | number
+    ledgerClosedAt?: StringFieldUpdateOperationsInput | string
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    receiver?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StreamArchiveUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    ledger?: IntFieldUpdateOperationsInput | number
+    ledgerClosedAt?: StringFieldUpdateOperationsInput | string
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    receiver?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BridgeLogCreateInput = {
+    id?: string
+    bridge: string
+    eventType: string
+    sourceChain: string
+    targetChain: string
+    sourceAsset: string
+    targetAsset?: string | null
+    amount: string
+    sender?: string | null
+    recipient: string
+    txHash: string
+    status: string
+    payload?: string | null
+    landedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -11693,7 +15027,6 @@ export namespace Prisma {
     votesAgainst?: number
     txHash: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type ProposalUpdateManyMutationInput = {
@@ -11705,7 +15038,6 @@ export namespace Prisma {
     votesAgainst?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProposalUncheckedUpdateManyInput = {
@@ -11717,7 +15049,90 @@ export namespace Prisma {
     votesAgainst?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiKeyCreateInput = {
+    id?: string
+    keyHash: string
+    name: string
+    owner: string
+    rateLimit?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string | null
+  }
+
+  export type ApiKeyUncheckedCreateInput = {
+    id?: string
+    keyHash: string
+    name: string
+    owner: string
+    rateLimit?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string | null
+  }
+
+  export type ApiKeyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    rateLimit?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ApiKeyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    rateLimit?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ApiKeyCreateManyInput = {
+    id?: string
+    keyHash: string
+    name: string
+    owner: string
+    rateLimit?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string | null
+  }
+
+  export type ApiKeyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    rateLimit?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ApiKeyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    rateLimit?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LedgerHashCreateInput = {
@@ -12383,6 +15798,50 @@ export namespace Prisma {
     votesAgainst?: SortOrder
   }
 
+  export type ApiKeyCountOrderByAggregateInput = {
+    id?: SortOrder
+    keyHash?: SortOrder
+    name?: SortOrder
+    owner?: SortOrder
+    rateLimit?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type ApiKeyAvgOrderByAggregateInput = {
+    rateLimit?: SortOrder
+  }
+
+  export type ApiKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    keyHash?: SortOrder
+    name?: SortOrder
+    owner?: SortOrder
+    rateLimit?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type ApiKeyMinOrderByAggregateInput = {
+    id?: SortOrder
+    keyHash?: SortOrder
+    name?: SortOrder
+    owner?: SortOrder
+    rateLimit?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type ApiKeySumOrderByAggregateInput = {
+    rateLimit?: SortOrder
+  }
+
   export type LedgerHashCountOrderByAggregateInput = {
     sequence?: SortOrder
     hash?: SortOrder
@@ -12774,6 +16233,10 @@ export namespace Prisma {
      * @deprecated Use ProposalDefaultArgs instead
      */
     export type ProposalArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProposalDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ApiKeyDefaultArgs instead
+     */
+    export type ApiKeyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ApiKeyDefaultArgs<ExtArgs>
     /**
      * @deprecated Use LedgerHashDefaultArgs instead
      */

@@ -36,7 +36,7 @@ export function createBatchRoutes(
      *   }
      */
     router.post(
-        "/api/v1/streams/metadata/batch",
+        "/streams/metadata/batch",
         async (req: Request, res: Response): Promise<void> => {
             try {
                 const { streamIds } = req.body as { streamIds?: unknown };
@@ -94,7 +94,7 @@ export function createBatchRoutes(
      * for the Stream Flow visualizer. projectedYield is null until vault association exists.
      */
     router.get(
-        "/api/v1/streams/:id/graph",
+        "/streams/:id/graph",
         async (req: Request, res: Response): Promise<void> => {
             try {
                 const id = req.params.id?.trim();

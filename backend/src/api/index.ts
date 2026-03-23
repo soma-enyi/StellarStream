@@ -11,15 +11,16 @@ import governanceRouter from "./governance.routes.js";
 
 const router = Router();
 
-// Register v1 routes
-router.use("/v1", streamsRouter);
-router.use("/v1/yield", yieldRouter);
-router.use("/v1/snapshots", snapshotRouter);
-router.use("/v1", governanceRouter);
+// Sub-routers (mounted relative to /api/v1 in index.ts)
+router.use("/", streamsRouter);
+router.use("/yield", yieldRouter);
+router.use("/snapshots", snapshotRouter);
+router.use("/", governanceRouter);
+
 const auditLogService = new AuditLogService();
 
 /**
- * GET /api/audit-log
+ * GET /api/v1/audit-log
  * Returns the last 50 protocol events in chronological order
  * Query params:
  *   - limit: number of events to return (default: 50, max: 100)
