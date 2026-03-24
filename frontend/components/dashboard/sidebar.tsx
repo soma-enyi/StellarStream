@@ -11,43 +11,52 @@ import {
   Waves,
   PanelLeftClose,
   PanelLeftOpen,
+  History as HistoryIcon,
 } from "lucide-react";
 
 type NavItem = {
   label: string;
-  href: string;
+  href?: string;
+  onClick?: () => void;
   icon: ComponentType<{ className?: string }>;
   /** Number shown as a badge. Omit or 0 to hide. */
   badge?: number;
 };
 
-const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: Gauge },
-  { label: "My Streams", href: "/dashboard/streams", icon: Waves },
-  {
-    label: "Pending Approvals",
-    href: "/dashboard/pending",
-    icon: ClipboardCheck,
-    // Hardcoded to 2 (streams awaiting the current user's signature).
-    // Replace with a value from a shared context / SWR hook when integrating live data.
-    badge: 2,
-  },
-  {
-    label: "Create Stream",
-    href: "/dashboard/create-stream",
-    icon: CirclePlus,
-  },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
-];
+interface SidebarProps {
+  onOpenAuditLog: () => void;
+}
 
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard") return pathname === href;
   return pathname.startsWith(href);
 }
 
-export function Sidebar() {
+export function Sidebar({ onOpenAuditLog }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+
+  const navItems: NavItem[] = [
+    { label: "Dashboard", href: "/dashboard", icon: Gauge },
+    { label: "My Streams", href: "/dashboard/streams", icon: Waves },
+    {
+      label: "Pending Approvals",
+      href: "/dashboard/pending",
+      icon: ClipboardCheck,
+      badge: 2,
+    },
+    {
+      label: "History",
+      onClick: onOpenAuditLog,
+      icon: HistoryIcon,
+    },
+    {
+      label: "Create Stream",
+      href: "/dashboard/create-stream",
+      icon: CirclePlus,
+    },
+    { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  ];
 
   return (
     <>
@@ -88,20 +97,9 @@ export function Sidebar() {
         <nav className="flex flex-1 flex-col gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={collapsed ? item.label : undefined}
-                className={`group relative flex items-center rounded-xl border transition-all duration-200 ${active
-                    ? "border-white/20 bg-white/8"
-                    : "border-transparent hover:border-white/10 hover:bg-white/[0.03]"
-                  } ${collapsed
-                    ? "h-10 w-10 justify-center p-0"
-                    : "gap-3 justify-start px-3 py-2.5"
-                  }`}
-              >
+            const active = item.href ? isActive(pathname, item.href) : false;
+            const content = (
+              <>
                 <span
                   className={`absolute rounded-lg blur-md transition-all duration-200 ${active ? "bg-[#8A00FF]/45 opacity-100" : "opacity-0"
                     } ${collapsed ? "inset-1" : "inset-y-1 left-2 w-8"}`}
@@ -131,8 +129,40 @@ export function Sidebar() {
                     {item.badge}
                   </span>
                 ) : null}
-              </Link>
+              </>
             );
+
+            const className = `group relative flex items-center rounded-xl border transition-all duration-200 ${active
+              ? "border-white/20 bg-white/8"
+              : "border-transparent hover:border-white/10 hover:bg-white/[0.03]"
+              } ${collapsed
+                ? "h-10 w-10 justify-center p-0"
+                : "gap-3 justify-start px-3 py-2.5"
+              }`;
+
+            if (item.href) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  title={collapsed ? item.label : undefined}
+                  className={className}
+                >
+                  {content}
+                </Link>
+              );
+            } else {
+              return (
+                <button
+                  key={item.label}
+                  onClick={item.onClick}
+                  title={collapsed ? item.label : undefined}
+                  className={className}
+                >
+                  {content}
+                </button>
+              );
+            }
           })}
         </nav>
 
@@ -168,13 +198,9 @@ export function Sidebar() {
         <nav className="mx-auto flex max-w-xl items-center justify-around gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative flex min-w-0 flex-1 flex-col items-center rounded-xl px-2 py-2"
-              >
+            const active = item.href ? isActive(pathname, item.href) : false;
+            const content = (
+              <>
                 <span
                   className={`absolute inset-x-3 top-1 h-6 rounded-lg blur-md ${active ? "bg-[#8A00FF]/45" : "bg-transparent"
                     }`}
@@ -189,8 +215,32 @@ export function Sidebar() {
                 >
                   {item.label}
                 </span>
-              </Link>
+              </>
             );
+
+            const className = "relative flex min-w-0 flex-1 flex-col items-center rounded-xl px-2 py-2";
+
+            if (item.href) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={className}
+                >
+                  {content}
+                </Link>
+              );
+            } else {
+              return (
+                <button
+                  key={item.label}
+                  onClick={item.onClick}
+                  className={className}
+                >
+                  {content}
+                </button>
+              );
+            }
           })}
         </nav>
       </div>
