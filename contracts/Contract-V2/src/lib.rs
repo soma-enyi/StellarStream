@@ -34,6 +34,55 @@ impl Contract {
     }
 
     // ----------------------------------------------------------------
+    // Issue #400 — Multi-sig Admin Handover
+    // ----------------------------------------------------------------
+
+    /// Replace the admin set and threshold.
+    ///
+    /// `signers` must contain at least the current threshold of existing
+    /// admins so the handover itself is multi-sig protected.
+    pub fn set_admins(
+        env: Env,
+        signers: Vec<Address>, // current admins authorising this change
+        new_admins: Vec<Address>,
+        new_threshold: u32,
+    ) -> Result<(), ContractError> {
+        // Validate new config before touching state.
+        if new_threshold == 0 || new_threshold > new_admins.len() {
+            return Err(ContractError::InvalidThreshold);
+        }
+
+        // Require current multi-sig quorum.
+        storage::require_multisig(&env, &signers)?;
+
+        storage::set_admin_list_raw(&env, &new_admins, new_threshold);
+        Ok(())
+    }
+
+    /// Return the current admin list.
+    pub fn get_admins(env: Env) -> Vec<Address> {
+        storage::get_admin_list(&env)
+    }
+
+    /// Return the current approval threshold.
+    pub fn get_threshold(env: Env) -> u32 {
+        storage::get_threshold(&env)
+    // Issue #396 — Dust Threshold
+    // ----------------------------------------------------------------
+
+    /// Return the minimum stream amount for `asset` (default: 10 XLM).
+    pub fn get_min_value(env: Env, asset: Address) -> i128 {
+        storage::get_min_value(&env, &asset)
+    }
+
+    /// Override the minimum for a specific asset. Admin-only.
+    pub fn set_min_value(env: Env, asset: Address, min: i128) -> Result<(), ContractError> {
+        storage::get_admin(&env).require_auth();
+        storage::set_min_value(&env, &asset, min);
+        Ok(())
+    }
+
+    // ----------------------------------------------------------------
     // Issue #359 — Migration Bridge
     // ----------------------------------------------------------------
 
@@ -102,6 +151,7 @@ impl Contract {
         };
 
         storage::set_stream(&env, v2_stream_id, &v2_stream);
+        storage::update_stats(&env, remaining, &v1_stream.sender, &caller);
 
         env.events().publish(
             (symbol_short!("migrated"), caller.clone()),
@@ -121,6 +171,10 @@ impl Contract {
         storage::get_stream(&env, stream_id)
     }
 
+    pub fn get_v2_protocol_health(env: Env) -> types::ProtocolHealthV2 {
+        storage::get_health(&env)
+    }
+    
     // ----------------------------------------------------------------
     // Issue #404 — Bulk TTL Extension
     // ----------------------------------------------------------------
@@ -158,6 +212,11 @@ impl Contract {
         // ── Guard: deadline ──────────────────────────────────────────
         if now > deadline {
             return Err(ContractError::ExpiredDeadline);
+        }
+
+        // ── Guard: dust threshold ─────────────────────────────────────
+        if total_amount < storage::get_min_value(&env, &token) {
+            return Err(ContractError::BelowDustThreshold);
         }
 
         // ── Guard: nonce ─────────────────────────────────────────────
@@ -221,6 +280,7 @@ impl Contract {
         };
 
         storage::set_stream(&env, stream_id, &stream);
+        storage::update_stats(&env, total_amount, &sender_addr, &receiver);
 
         // ── Emit event ────────────────────────────────────────────────
         env.events().publish(
