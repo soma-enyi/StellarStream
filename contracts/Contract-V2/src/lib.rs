@@ -10,7 +10,7 @@ mod v1_interface;
 
 use errors::ContractError;
 pub use types::{
-    BatchStreamsCreatedEvent, ContractPausedEvent, ContractUnpausedEvent, MigrationEvent, PermitArgs, PermitStreamCreatedEvent, StreamArgs,
+    AdminTransferredEvent, BatchStreamsCreatedEvent, ContractPausedEvent, ContractUnpausedEvent, MigrationEvent, PermitArgs, PermitStreamCreatedEvent, StreamArgs,
     StreamCancelledV2Event, StreamClaimV2Event, StreamCreatedV2Event, StreamMigratedEvent,
     StreamV2,
 };
@@ -200,7 +200,7 @@ impl Contract {
 
         // Emit migration event for indexer
         env.events().publish(
-            Symbol::new(&env, "migrate"),
+            (Symbol::new(&env, "migrate"),),
             (v1_stream_id, v2_stream_id, caller.clone(), remaining),
         );
 
@@ -386,6 +386,36 @@ impl Contract {
 
     pub fn bump_active_streams_ttl(env: Env, ids: Vec<u64>) -> u32 {
         storage::bump_streams_ttl(&env, &ids)
+    }
+
+    // ----------------------------------------------------------------
+    // Governance: Stream-Weighted Voting Power
+    // ----------------------------------------------------------------
+
+    /// Calculate the total value currently locked in active streams for a user.
+    /// This represents the user's "skin in the game" for governance purposes.
+    ///
+    /// Returns the sum of (total_amount - withdrawn_amount) for all non-cancelled
+    /// streams where the user is either sender or receiver.
+    pub fn get_active_volume(env: Env, user: Address) -> i128 {
+        let total_streams = storage::get_health(&env).total_v2_streams;
+        let mut total_locked: i128 = 0;
+
+        for i in 0..total_streams {
+            if let Some(stream) = storage::get_stream(&env, i) {
+                // Only count active (non-cancelled) streams
+                if !stream.cancelled {
+                    // Check if user is involved in this stream
+                    if stream.sender == user || stream.receiver == user {
+                        // Calculate remaining locked amount
+                        let locked = stream.total_amount.saturating_sub(stream.withdrawn_amount);
+                        total_locked = total_locked.saturating_add(locked);
+                    }
+                }
+            }
+        }
+
+        total_locked
     }
 
     pub fn pause(env: Env) -> Result<(), ContractError> {
@@ -604,7 +634,7 @@ impl Contract {
 
         // Validate all streams upfront to ensure atomicity
         let mut total_amount: i128 = 0;
-        let mut sender = streams.get(0).unwrap().sender.clone();
+        let sender = streams.get(0).unwrap().sender.clone();
 
         for args in streams.iter() {
             // All streams must have the same sender
@@ -688,7 +718,7 @@ impl Contract {
 
         // Emit batch creation summary event
         env.events().publish(
-            (symbol_short!("batch_create"), sender.clone()),
+            (symbol_short!("batch_cr"), sender.clone()),
             BatchStreamsCreatedEvent {
                 stream_ids: stream_ids.clone(),
                 sender: sender.clone(),

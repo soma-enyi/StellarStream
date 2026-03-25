@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Address, BytesN};
+use soroban_sdk::{contracttype, Address, BytesN, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, PartialEq)]
@@ -65,12 +65,7 @@ pub struct StreamMigratedEvent {
 #[contracttype]
 #[derive(Clone, Debug)]
 pub enum MigrationEvent {
-    Migrated {
-        v1_id: u64,
-        v2_id: u64,
-        sender: Address,
-        remaining_balance: i128,
-    },
+    Migrated(u64, u64, Address, i128),
 }
 
 #[contracttype]

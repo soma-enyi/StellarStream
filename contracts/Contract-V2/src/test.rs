@@ -5,7 +5,7 @@ use crate::types::{PermitArgs, StreamArgs};
 use soroban_sdk::{
     testutils::{Address as _, Ledger},
     token::TokenClient,
-    Address, Env,
+    Address, Env, Vec,
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -863,15 +863,15 @@ fn test_create_batch_streams_success() {
     let receiver1 = Address::generate(&env);
     let receiver2 = Address::generate(&env);
     let token_admin = Address::generate(&env);
-    let (token_id, token_client, _) = create_token(&env, &token_admin);
+    let (token_id, token_client, asset_client) = create_token(&env, &token_admin);
 
     // Mint tokens to sender
-    token_client.mint(&sender, &1_000_000_000);
+    asset_client.mint(&sender, &1_000_000_000);
 
     let (_, v2_client) = setup_v2(&env, &admin);
 
     // Create batch of 2 streams
-    let streams = vec![
+    let streams = soroban_sdk::vec![
         &env,
         StreamArgs {
             sender: sender.clone(),
@@ -917,7 +917,7 @@ fn test_create_batch_streams_success() {
 
     // Check tokens were transferred
     assert_eq!(token_client.balance(&sender), 700_000_000); // 1e9 - 3e8
-    assert_eq!(token_client.balance(&v2_client.contract_id), 300_000_000);
+    assert_eq!(token_client.balance(&v2_client.address), 300_000_000);
 }
 
 #[test]
@@ -935,7 +935,7 @@ fn test_create_batch_streams_max_limit() {
 
     // Create 11 streams (exceeds limit)
     let mut streams = Vec::new(&env);
-    for i in 0..11 {
+    for _i in 0..11 {
         streams.push_back(StreamArgs {
             sender: sender.clone(),
             receiver: receiver.clone(),
@@ -962,21 +962,21 @@ fn test_create_batch_streams_atomic_failure() {
     let sender = Address::generate(&env);
     let receiver = Address::generate(&env);
     let token_admin = Address::generate(&env);
-    let (token_id, token_client, _) = create_token(&env, &token_admin);
+    let (token_id, token_client, asset_client) = create_token(&env, &token_admin);
 
     // Mint insufficient tokens
-    token_client.mint(&sender, &100_000_000);
+    asset_client.mint(&sender, &200_000_000);
 
     let (_, v2_client) = setup_v2(&env, &admin);
 
-    // Create batch with total amount exceeding balance
-    let streams = vec![
+    // Create batch with total amount exceeding balance (100M + 110M = 210M > 200M)
+    let streams = soroban_sdk::vec![
         &env,
         StreamArgs {
             sender: sender.clone(),
             receiver: receiver.clone(),
             token: token_id.clone(),
-            total_amount: 50_000_000,
+            total_amount: 100_000_000,
             start_time: 0,
             cliff_time: 0,
             end_time: 100,
@@ -987,7 +987,7 @@ fn test_create_batch_streams_atomic_failure() {
             sender: sender.clone(),
             receiver: receiver.clone(),
             token: token_id.clone(),
-            total_amount: 60_000_000, // Total 110M > 100M balance
+            total_amount: 110_000_000,
             start_time: 0,
             cliff_time: 0,
             end_time: 100,
@@ -1001,9 +1001,307 @@ fn test_create_batch_streams_atomic_failure() {
     assert!(result.is_err());
 
     // No streams should be created
-    assert!(v2_client.try_get_stream(&0).is_err());
-    assert!(v2_client.try_get_stream(&1).is_err());
+    assert!(v2_client.get_stream(&0).is_none());
+    assert!(v2_client.get_stream(&1).is_none());
 
     // Balance should be unchanged
-    assert_eq!(token_client.balance(&sender), 100_000_000);
+    assert_eq!(token_client.balance(&sender), 200_000_000);
+}
+
+// ── Governance: Stream-Weighted Voting Power tests ───────────────────────────
+
+#[test]
+fn test_get_active_volume_single_stream_as_receiver() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &100_000_000);
+
+    // Create stream: 100M tokens
+    let sid = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // Receiver should have 100M locked
+    let volume = v2_client.get_active_volume(&receiver);
+    assert_eq!(volume, 100_000_000);
+}
+
+#[test]
+fn test_get_active_volume_single_stream_as_sender() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &100_000_000);
+
+    let sid = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // Sender should also have 100M locked (their commitment)
+    let volume = v2_client.get_active_volume(&sender);
+    assert_eq!(volume, 100_000_000);
+}
+
+#[test]
+fn test_get_active_volume_multiple_streams() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &600_000_000);
+
+    // Create 3 streams
+    let _sid1 = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    let _sid2 = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 200_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    let _sid3 = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 300_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // Receiver should have total of 600M locked
+    let volume = v2_client.get_active_volume(&receiver);
+    assert_eq!(volume, 600_000_000);
+}
+
+#[test]
+fn test_get_active_volume_after_partial_withdrawal() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &100_000_000);
+
+    // Create stream: 100M tokens, 0 to 100
+    let sid = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // At t=50, 50M unlocked
+    env.ledger().with_mut(|li| li.timestamp = 50);
+    v2_client.withdraw(&sid, &receiver);
+
+    // After withdrawing 50M, 50M should remain locked
+    let volume = v2_client.get_active_volume(&receiver);
+    assert_eq!(volume, 50_000_000);
+}
+
+#[test]
+fn test_get_active_volume_excludes_cancelled_streams() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &200_000_000);
+
+    // Create 2 streams
+    let sid1 = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    let sid2 = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // Cancel first stream
+    env.ledger().with_mut(|li| li.timestamp = 50);
+    v2_client.cancel(&sid1, &sender);
+
+    // Only sid2 should count (100M), sid1 is cancelled
+    let volume = v2_client.get_active_volume(&receiver);
+    assert_eq!(volume, 100_000_000);
+}
+
+#[test]
+fn test_get_active_volume_unrelated_user_returns_zero() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sender = Address::generate(&env);
+    let receiver = Address::generate(&env);
+    let stranger = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&sender, &100_000_000);
+
+    let sid = v2_client.create_stream(&StreamArgs {
+        sender: sender.clone(),
+        receiver: receiver.clone(),
+        token: token_id.clone(),
+        total_amount: 100_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // Stranger has no involvement in the stream
+    let volume = v2_client.get_active_volume(&stranger);
+    assert_eq!(volume, 0);
+}
+
+#[test]
+fn test_get_active_volume_empty_stream_list() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let user = Address::generate(&env);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    // Empty list should return 0
+    let volume = v2_client.get_active_volume(&user);
+    assert_eq!(volume, 0);
+}
+
+#[test]
+fn test_get_active_volume_mixed_roles() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let user = Address::generate(&env);
+    let other1 = Address::generate(&env);
+    let _other2 = Address::generate(&env);
+    let token_admin = Address::generate(&env);
+    let (token_id, _, asset_client) = create_token(&env, &token_admin);
+    let (_, v2_client) = setup_v2(&env, &admin);
+
+    asset_client.mint(&user, &200_000_000);
+    asset_client.mint(&other1, &200_000_000);
+
+    // User as sender
+    let _sid1 = v2_client.create_stream(&StreamArgs {
+        sender: user.clone(),
+        receiver: other1.clone(),
+        token: token_id.clone(),
+        total_amount: 200_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // User as receiver
+    let _sid2 = v2_client.create_stream(&StreamArgs {
+        sender: other1.clone(),
+        receiver: user.clone(),
+        token: token_id.clone(),
+        total_amount: 200_000_000,
+        start_time: 0,
+        cliff_time: 0,
+        end_time: 100,
+        step_duration: 0,
+        multiplier_bps: 0,
+    });
+
+    // User should have both streams counted: 200M + 200M = 400M
+    let volume = v2_client.get_active_volume(&user);
+    assert_eq!(volume, 400_000_000);
 }
