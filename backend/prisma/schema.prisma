@@ -189,3 +189,24 @@ model LedgerHash {
   hash      String
   createdAt DateTime @default(now())
 }
+
+// Notification subscriptions — maps a Stellar address to a Discord/Telegram endpoint
+model NotificationSubscription {
+  id             String   @id @default(cuid())
+  stellarAddress String               // Receiver address to watch
+  platform       NotificationPlatform // discord | telegram
+  webhookUrl     String?              // Discord: full webhook URL
+  chatId         String?              // Telegram: chat/user ID
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([stellarAddress, platform])
+  @@index([stellarAddress])
+  @@index([platform])
+}
+
+enum NotificationPlatform {
+  discord
+  telegram
+}
