@@ -495,6 +495,22 @@
                   "map": [
                     {
                       "key": {
+                        "symbol": "beneficiary"
+                      },
+                      "val": {
+                        "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M"
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "cancellation_type"
+                      },
+                      "val": {
+                        "u32": 0
+                      }
+                    },
+                    {
+                      "key": {
                         "symbol": "cancelled"
                       },
                       "val": {
@@ -511,6 +527,22 @@
                     },
                     {
                       "key": {
+                        "symbol": "cycle_duration"
+                      },
+                      "val": {
+                        "u64": 0
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "end_time"
+                      },
+                      "val": {
+                        "u64": 0
+                      }
+                    },
+                    {
+                      "key": {
                         "symbol": "end_time"
                       },
                       "val": {
@@ -519,20 +551,32 @@
                     },
                     {
                       "key": {
-                        "symbol": "migrated_from_v1"
+                        "symbol": "multiplier_bps"
+                        "symbol": "is_recurrent"
                       },
                       "val": {
-                        "bool": true
+                        "bool": false
                       }
                     },
                     {
                       "key": {
-                        "symbol": "multiplier_bps"
+                        "symbol": "migrated_from_v1"
                       },
                       "val": {
                         "i128": {
                           "hi": 0,
                           "lo": 0
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "packed_meta"
+                      },
+                      "val": {
+                        "u128": {
+                          "hi": 0,
+                          "lo": 281474976710656
                         }
                       }
                     },
@@ -597,6 +641,12 @@
                       "val": {
                         "u64": 0
                       }
+                    },
+                    {
+                      "key": {
+                        "symbol": "vault_address"
+                      },
+                      "val": "void"
                     },
                     {
                       "key": {

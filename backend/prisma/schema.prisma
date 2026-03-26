@@ -16,8 +16,10 @@ model Stream {
   id           String       @id @default(cuid())
   streamId     String?      @unique // Contract-level Stream ID
   txHash       String       @unique
+  version      Int          @default(1)
   sender       String
   receiver     String
+  contractId   String?      @map("contract_id")
   tokenAddress String?
   amount       String       // Store as string to handle large numbers safely
   duration     Int?
@@ -26,12 +28,44 @@ model Stream {
   legacy       Boolean      @default(false) // true = originated from V1 contract
   migrated     Boolean      @default(false) // true = V1 stream superseded by V2
   isPrivate    Boolean      @default(false)
+  yieldEnabled Boolean      @default(false) @map("yield_enabled")
+  vaultContractId String?
+  vaultShareBalance String?
+  vaultRatioScale String?
+  accruedInterest String    @default("0")
+  lastYieldAccrualAt DateTime?
+  isDust       Boolean      @default(false) // true = below MIN_VALUE_USD threshold
+  affiliateId  String?      // Affiliate who referred this stream (0.5% commission)
   createdAt    DateTime     @default(now())
 
   @@index([sender])
   @@index([receiver])
   @@index([streamId])
+  @@index([contractId])
   @@index([legacy])
+  @@index([yieldEnabled, status])
+  @@index([isDust])
+  @@index([affiliateId])
+}
+
+model ContractEvent {
+  id             String   @id @default(cuid())
+  eventId        String   @unique @map("event_id")
+  contractId     String   @map("contract_id")
+  txHash         String   @map("tx_hash")
+  eventType      String   @map("event_type")
+  eventIndex     Int      @default(0) @map("event_index")
+  ledgerSequence Int      @map("ledger_sequence")
+  ledgerClosedAt String?  @map("ledger_closed_at")
+  topicXdr       String[] @default([]) @map("topic_xdr")
+  valueXdr       String   @map("value_xdr")
+  decodedJson    Json     @map("decoded_json")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@unique([txHash, eventIndex])
+  @@index([contractId, ledgerSequence])
+  @@index([eventType])
+  @@index([txHash])
 }
 
 // Token prices for leaderboard volume calculations
@@ -48,9 +82,33 @@ model Webhook {
   id          String   @id @default(cuid())
   url         String   @unique
   description String?
+  eventType   String   @default("*") // "*" = all events, or specific: create_stream, withdraw, cancel
+  secretKey   String   // HMAC secret for signing payloads
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([eventType])
+  @@index([isActive])
+}
+
+// Webhook delivery attempts for retry logic
+model WebhookDelivery {
+  id          String   @id @default(cuid())
+  webhookId   String
+  eventType   String
+  payload     Json
+  status      String   @default("pending") // pending, success, failed
+  attempts    Int      @default(0)
+  maxRetries  Int      @default(5)
+  nextRetryAt DateTime?
+  lastError   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([webhookId, status])
+  @@index([nextRetryAt])
+  @@index([createdAt])
 }
 
 // Tracks the last synced blockchain ledger sequence
@@ -209,4 +267,89 @@ model NotificationSubscription {
 enum NotificationPlatform {
   discord
   telegram
+}
+
+// Invoice links for Nebula-Pay payment link generator
+model InvoiceLink {
+  id            String   @id @default(cuid())
+  slug          String   @unique // Short UUID for shareable URL
+  sender        String
+  receiver      String
+  amount        String   // Total amount to stream
+  tokenAddress  String
+  duration      Int      // Duration in seconds
+  description   String?  // Optional invoice description
+  pdfUrl        String?  // Optional PDF invoice URL
+  xdrParams     String   // Encoded XDR parameters for contract call
+  status        String   @default("DRAFT") // DRAFT, SIGNED, COMPLETED, EXPIRED
+  expiresAt     DateTime? // Optional expiration time
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([sender])
+  @@index([status])
+  @@index([createdAt])
+// Affiliate earnings tracker for 0.5% commission on stream creation
+model Affiliate {
+  id             String   @id @default(cuid())
+  stellarAddress String   @unique
+  pendingClaim   String   @default("0") // Total unclaimed earnings in stroops
+  totalEarned    String   @default("0") // Lifetime earnings
+  claimedAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([stellarAddress])
+// Global protocol statistics for landing page
+model GlobalStats {
+  id              String   @id @default("global")
+  tvlUsd          String   @default("0") // Total Value Locked in USD
+  volume24hUsd    String   @default("0") // 24h volume in USD
+  activeStreams   Int      @default(0)
+  totalStreams    Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
+
+// Daily TVL snapshots for growth charts
+model TvlSnapshot {
+  id        String   @id @default(cuid())
+  tvlUsd    String   // Total Value Locked in USD on this day
+  date      DateTime @unique // Midnight UTC
+  createdAt DateTime @default(now())
+
+  @@index([date])
+}
+
+// Asset metadata from stellar.toml
+model Asset {
+  id              String   @id @default(cuid())
+  tokenAddress    String   @unique
+  homeDomain      String?
+  name            String?
+  symbol          String?
+  imageUrl        String?
+  decimals        Int      @default(7)
+  isVerified      Boolean  @default(false)
+  lastFetchedAt   DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([tokenAddress])
+// Whitelisted assets visible in the StellarStream UI
+model AssetConfig {
+  id           String   @id @default(cuid())
+  assetId      String   @unique  // Stellar asset identifier (e.g. "USDC:GABC...")
+  symbol       String
+  name         String
+  decimals     Int      @default(7)
+  isVerified   Boolean  @default(false)
+  isVisible    Boolean  @default(true)
+  yieldEnabled Boolean  @default(false) @map("yield_enabled")
+  iconUrl      String?  @map("icon_url")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isVerified])
+  @@index([isVisible])
 }

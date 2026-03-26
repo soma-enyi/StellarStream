@@ -37,4 +37,29 @@ export {
   type CleanupResult,
 } from "./stale-stream-cleanup.service.js";
 
-export { GasTankService, type GasTankStatus, type GasTankConfig } from "./gas-tank.service.js";
+export {
+  GasTankService,
+  type GasTankStatus,
+  type GasTankConfig,
+} from "./gas-tank.service.js";
+
+export {
+  DataIntegrityService,
+  type DataIntegrityMismatch,
+  type DataIntegrityReport,
+} from "./data-integrity.service.js";
+
+export {
+  YieldAccrualService,
+  type YieldAccrualReport,
+  type YieldAccrualUpdate,
+} from "./yield-accrual.service.js";
+
+// Real-time push notifications
+export { WarpService, type WarpEventPayload } from "./warp.service.js";
+
+// Bridge observer for cross-chain transfers
+export { BridgeObserverService, type BridgeTransferEvent } from "./bridge-observer.service.js";
+
+// TTL archival monitoring
+export { TTLArchivalMonitorService, type StreamTTLStatus } from "./ttl-archival-monitor.service.js";

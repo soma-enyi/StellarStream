@@ -47,12 +47,14 @@ mod voting_test;
 mod ttl_stress_test;
 
 use errors::Error;
-use soroban_sdk::{contract, contractimpl, symbol_short, token, Address, Env, Vec};
+use soroban_sdk::{
+    contract, contractimpl, panic_with_error, symbol_short, token, Address, Env, Vec,
+};
 use storage::{PROPOSAL_COUNT, RECEIPT, RESTRICTED_ADDRESSES, STREAM_COUNT};
 use types::{
     ContributorRequest, CurveType, DataKey, Milestone, ProposalApprovedEvent, ProposalCreatedEvent,
     ReceiptMetadata, RequestCreatedEvent, RequestExecutedEvent, RequestKey, RequestStatus, Role,
-    Stream, StreamCreatedEvent, StreamProposal, StreamReceipt,
+    Stream, StreamCancelledEvent, StreamCreatedEvent, StreamProposal, StreamReceipt,
 };
 
 #[contract]
@@ -1030,6 +1032,23 @@ impl StellarStreamContract {
         env.storage()
             .instance()
             .get(&RequestKey::Request(request_id))
+    }
+
+    // ========== OFAC Compliance Functions ==========
+
+    /// Internal helper: validate receiver is not restricted
+    fn validate_receiver(env: &Env, receiver: &Address) -> Result<(), Error> {
+        let list: Vec<Address> = env
+            .storage()
+            .instance()
+            .get(&RESTRICTED_ADDRESSES)
+            .unwrap_or_else(|| Vec::new(env));
+        for existing in list.iter() {
+            if &existing == receiver {
+                return Err(Error::ReceiverRestricted);
+            }
+        }
+        Ok(())
     }
 
     pub fn get_proposal(env: Env, proposal_id: u64) -> Option<StreamProposal> {

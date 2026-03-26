@@ -3,7 +3,7 @@
 /// Internally stores values as `inner * SCALE`, so 1.0 is represented as
 /// 10_000_000. This gives enough headroom for Stellar token amounts (which
 /// use 7 decimal places) while keeping all arithmetic in i128.
-use crate::errors::ContractError;
+use crate::contracterror::Error;
 
 pub const SCALE: i128 = 10_000_000; // 10^7
 
@@ -29,65 +29,65 @@ impl FixedPoint {
     /// `(amount * numerator) / denominator` with full i128 intermediate
     /// precision and checked arithmetic throughout.
     ///
-    /// Returns `Err(ContractError::Overflow)` on overflow or divide-by-zero.
+    /// Returns `Err(Error::Overflow)` on overflow or divide-by-zero.
     pub fn mul_div(
         amount: i128,
         numerator: i128,
         denominator: i128,
-    ) -> Result<i128, ContractError> {
+    ) -> Result<i128, Error> {
         if denominator == 0 {
-            return Err(ContractError::Overflow);
+            return Err(Error::Overflow);
         }
         // Scale up before dividing to preserve 7 decimal places of precision.
         let scaled = amount
             .checked_mul(numerator)
-            .ok_or(ContractError::Overflow)?
+            .ok_or(Error::Overflow)?
             .checked_mul(SCALE)
-            .ok_or(ContractError::Overflow)?;
+            .ok_or(Error::Overflow)?;
 
         let result = scaled
             .checked_div(denominator)
-            .ok_or(ContractError::Overflow)?;
+            .ok_or(Error::Overflow)?;
 
         // Return floor value (drop the SCALE factor).
         Ok(result / SCALE)
     }
 
     /// Checked addition.
-    pub fn checked_add(self, rhs: FixedPoint) -> Result<FixedPoint, ContractError> {
+    pub fn checked_add(self, rhs: FixedPoint) -> Result<FixedPoint, Error> {
         self.0
             .checked_add(rhs.0)
             .map(FixedPoint)
-            .ok_or(ContractError::Overflow)
+            .ok_or(Error::Overflow)
     }
 
     /// Checked subtraction.
-    pub fn checked_sub(self, rhs: FixedPoint) -> Result<FixedPoint, ContractError> {
+    pub fn checked_sub(self, rhs: FixedPoint) -> Result<FixedPoint, Error> {
         self.0
             .checked_sub(rhs.0)
             .map(FixedPoint)
-            .ok_or(ContractError::Overflow)
+            .ok_or(Error::Overflow)
     }
 
     /// Checked multiplication of two FixedPoint values.
     /// Result is re-scaled: (a * b) / SCALE.
-    pub fn checked_mul(self, rhs: FixedPoint) -> Result<FixedPoint, ContractError> {
+    pub fn checked_mul(self, rhs: FixedPoint) -> Result<FixedPoint, Error> {
         self.0
             .checked_mul(rhs.0)
             .map(|v| FixedPoint(v / SCALE))
-            .ok_or(ContractError::Overflow)
+            .ok_or(Error::Overflow)
     }
 
     /// Checked division of two FixedPoint values.
     /// Result is re-scaled: (a * SCALE) / b.
-    pub fn checked_div(self, rhs: FixedPoint) -> Result<FixedPoint, ContractError> {
+    pub fn checked_div(self, rhs: FixedPoint) -> Result<FixedPoint, Error> {
         if rhs.0 == 0 {
-            return Err(ContractError::Overflow);
+            return Err(Error::Overflow);
         }
         self.0
             .checked_mul(SCALE)
             .map(|v| FixedPoint(v / rhs.0))
-            .ok_or(ContractError::Overflow)
+            .ok_or(Error::Overflow)
     }
 }
 
@@ -117,7 +117,7 @@ mod tests {
     fn test_mul_div_divide_by_zero() {
         assert_eq!(
             FixedPoint::mul_div(1000, 1, 0),
-            Err(ContractError::Overflow)
+            Err(Error::Overflow)
         );
     }
 
@@ -126,7 +126,7 @@ mod tests {
         // i128::MAX * 2 overflows
         assert_eq!(
             FixedPoint::mul_div(i128::MAX, 2, 1),
-            Err(ContractError::Overflow)
+            Err(Error::Overflow)
         );
     }
 
@@ -143,7 +143,7 @@ mod tests {
     fn test_checked_add_overflow() {
         let a = FixedPoint::from_raw(i128::MAX);
         let b = FixedPoint::from_raw(1);
-        assert_eq!(a.checked_add(b), Err(ContractError::Overflow));
+        assert_eq!(a.checked_add(b), Err(Error::Overflow));
     }
 
     #[test]
@@ -157,7 +157,7 @@ mod tests {
     fn test_checked_sub_underflow() {
         let a = FixedPoint::from_raw(i128::MIN);
         let b = FixedPoint::from_raw(1);
-        assert_eq!(a.checked_sub(b), Err(ContractError::Overflow));
+        assert_eq!(a.checked_sub(b), Err(Error::Overflow));
     }
 
     #[test]
@@ -179,6 +179,6 @@ mod tests {
     fn test_checked_div_by_zero() {
         let a = FixedPoint::from_amount(10);
         let b = FixedPoint::from_raw(0);
-        assert_eq!(a.checked_div(b), Err(ContractError::Overflow));
+        assert_eq!(a.checked_div(b), Err(Error::Overflow));
     }
 }
